@@ -367,36 +367,6 @@ The repository includes a production **GitHub Actions** workflow (`.github/workf
 3. **Automated Testing**: Runs pytest matrix across Python `3.11` and `3.12` with XML code coverage exports.
 4. **Multi-Arch Docker Build**: Cross-compiles images for `linux/amd64` and `linux/arm64` and publishes tagged releases to **GitHub Container Registry (GHCR)**.
 
----
-
-## 🎯 Interview & Architectural Deep-Dive (STAR)
-
-<details>
-<summary><b>1. How is sub-millisecond redirection latency achieved under heavy load?</b></summary>
-
-- **Situation**: URL shorteners experience read-to-write ratios often exceeding 100:1. Querying PostgreSQL on every redirect causes database connection saturation.
-- **Task**: Achieve consistent sub-millisecond redirection latency while maintaining data consistency.
-- **Action**: Implemented the **Cache-Aside pattern** in Redis with a 30-minute TTL. On cache hit, the route immediately returns an HTTP 302 Found response. Analytics persistence is offloaded to asynchronous `BackgroundTasks`, completely decoupling analytics writes from the client HTTP request loop. When links are updated or deleted, the cache entry is explicitly invalidated.
-- **Result**: Reduced average redirection response time from $\approx 25\text{ms}$ down to $<1.5\text{ms}$.
-</details>
-
-<details>
-<summary><b>2. How does the rate limiter handle high-concurrency traffic without database bottlenecks?</b></summary>
-
-- **Situation**: Traditional database-backed rate limiters introduce disk I/O latency and race conditions during traffic spikes.
-- **Task**: Build an atomic, memory-efficient rate limiter that supports tiered limits for anonymous vs authenticated clients.
-- **Action**: Implemented `RateLimitMiddleware` using an atomic Redis pipeline (`INCR` + `TTL`). Anonymous users are bucketed by client IP (50 req/hr), while authenticated requests decode the JWT to extract the `sub` user ID (500 req/hr). Injected standard RFC rate limit headers and implemented **fail-open fault tolerance** to safeguard uptime if Redis fails.
-- **Result**: Enforced zero-race-condition rate limiting with negligible sub-millisecond overhead.
-</details>
-
-<details>
-<summary><b>3. How is token security enforced against replay and theft attacks?</b></summary>
-
-- **Situation**: Long-lived API tokens or reusable refresh tokens pose severe security vulnerabilities if intercepted.
-- **Task**: Implement robust session security with automatic session rotation.
-- **Action**: Designed **Single-Use Refresh Token Rotation (RTR)**. Access tokens expire in 15 minutes. When exchanging a refresh token at `/api/v1/auth/refresh`, the server atomically verifies the cryptographic hash in the database, revokes the current token (`is_revoked = True`), and issues a new access/refresh pair. If an already-revoked token is used, the request is rejected immediately.
-- **Result**: Guaranteed session protection where stolen refresh tokens are invalidated upon first use.
-</details>
 
 ---
 
