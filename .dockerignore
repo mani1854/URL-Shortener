@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+
+# Files to always exclude from the build context
+.git
+.gitignore
+.env
+.env.*
+**/.venv
+**/venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache
+**/htmlcov
+**/.coverage
+**/.mypy_cache
+**/.ruff_cache
+README.md
+docs/
+*.log

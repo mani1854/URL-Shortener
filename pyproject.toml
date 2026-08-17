@@ -1,0 +1,53 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "anyio: mark test to run with anyio",
+    "asyncio: mark test to run with asyncio",
+]
+addopts = [
+    "--tb=short",
+    "-v",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "C4",  # comprehensions
+    "UP",  # pyupgrade
+    "SIM", # simplify
+]
+ignore = [
+    "B008",  # FastAPI Depends() in function defaults
+    "E501",  # Line too long (handled by formatter)
+    "UP017", # datetime.UTC alias
+    "UP046", # Generic class type parameters (PEP 695)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = false
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["alembic.*", "shortuuid.*", "validators.*", "structlog.*", "user_agents.*", "passlib.*", "jose.*"]
+ignore_missing_imports = true

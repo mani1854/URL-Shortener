@@ -1,0 +1,58 @@
+# Byte-compiled / optimised / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Testing / coverage
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+# (.dockerignore should be tracked in git)
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Alembic (keep versions/, ignore __pycache__)
+alembic/versions/__pycache__/
+
+# Logs
+*.log
+logs/
