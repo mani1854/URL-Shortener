@@ -400,6 +400,4 @@ The repository includes a production **GitHub Actions** workflow (`.github/workf
 
 ---
 
-## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
